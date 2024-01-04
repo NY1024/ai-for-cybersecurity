@@ -33,7 +33,7 @@
 
 
 
-<figure><img src=".gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (27) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 4.3 数据处理
 
@@ -43,9 +43,9 @@
 
 代码4.1是一个原始HDFS日志的示例，记录了“INFO”文本后的系统行为、源IP地址和目标IP地址。“blk\_-1608999687919862906”是一个块ID。表4.3展示了一些正常的块ID和一些异常的块ID。
 
-<figure><img src=".gitbook/assets/image (29).png" alt=""><figcaption><p>代码4.1：HDFS日志数据集中的示例原始数据</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (29) (1).png" alt=""><figcaption><p>代码4.1：HDFS日志数据集中的示例原始数据</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (30).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (30) (1).png" alt=""><figcaption></figcaption></figure>
 
 \
 在数据处理阶段，我们首先将日志键重新设计为三个键集K0（新基础）、K1和K2。它们分别包含31、101和304个日志键。由于会话和块ID都有标签，因此可以安全地使用日志键对每个事件（即日志条目）进行编码，而无需修改原始事件序列。在配置seqlen = 10下，每个键集的统计信息如表4.4所示。这些键集来自同一个日志，只是K1和K2通过重新附加附加字符串来丢弃较少的信息，例如：
@@ -121,17 +121,17 @@
 
 其中，ϕ是编码器函数，ψ是解码器函数，E是将S映射到X的嵌入函数，rev是一个反转分布矩阵的函数。
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption><p>图4.3：深度LSTM自编码器网络[93]</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (21).png" alt=""><figcaption><p>图4.3：深度LSTM自编码器网络[93]</p></figcaption></figure>
 
 我们使用rev函数的原因是Y与Xe的顺序相反，这是由于LSTM的隐藏状态。如图4.3所示，我们可以通过以下方式简单表示LSTM网络：
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure>
 
 其中，ht是时间步t处的隐藏状态，xt是当前数据点。正如我们所看到的，LSTM从第1步到最后一个时间步迭代计算这个函数。类似于函数堆栈，我们可以将这个编码器过程看作是将xt推入堆栈hT，解码器过程是从堆栈hT中弹出xt。因此，Xe和Y的顺序是相反的。 这个自编码器是非条件的，这意味着在解码Y = \[yτ | 1 ≤ τ ≤ T]中的yˆτ+1时，它不会向解码器ϕ提供条件数据点yˆτ = eT −τ+1，尽管条件预测器可以提供更好的结果。首先，条件自编码器充当提示，告诉预测器应该解码哪个后缀，而对自编码器本身提供了没有额外目的。其次，因为相邻事件通常具有显著的短期依赖关系，提供一个导致模型迅速学习短期依赖关系但忽略长期连接的条件并不是最优的。代码4.6显示了实现自编码器的代码片段。
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (23).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption><p>代码4.6 自编码器</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (24).png" alt=""><figcaption><p>代码4.6 自编码器</p></figcaption></figure>
 
 ### 4.4.4 事件分类器与 
 
@@ -139,21 +139,21 @@
 
 使用嵌入层和自编码器仍然不足以实现我们的目标：预测一个序列是正常还是异常。因此，在深度自编码器之后，我们立即添加了一个额外的单层前馈神经网络γ进行预测。层γ充当一个多类分类器，接受解码器的输出Y作为输入，并生成概率矩阵P = \[Pτ | 1 ≤ τ ≤ T]，其中Pτ = \[Pi | 1 ≤ i ≤ V ]，而Pi可以被解释为离散事件et = eT −τ+1是离散事件键ki的实例的可能性。我们选择γ作为事件分类器，而不是一些典型异常检测自编码器中使用的标量重构误差，因为通过检查离散事件来识别时间敏感的异常更像是一个语言处理问题。我的意思是，我们可以将序列S视为句子，事件et视为单词，因此我们更关心措辞而不是嵌入，以找到合适的词和不合适的词，这等同于S中的正常事件和异常事件。
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (25).png" alt=""><figcaption></figcaption></figure>
 
 其次，类似于嵌入层，我们还在one-hot函数中包含序列开始、序列结束和未知。请注意，从one-hot表示生成的概率矩阵ˆP与X的顺序相反。因此，嵌入-编码器-解码器-分类器网络试图最小化以下函数：
 
-<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
 
 狭义而言，该事件分类器γ的目标函数基于由以下公式定义的分类交叉熵损失：
 
-<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
 
 在异常检测的措辞选项中，基于排名和基于阈值的方法是先前工作中采用的两种常见方法。为了与现有工作进行比较，DabLog采用了基于排名的标准，尽管它有一些缺点，这将在最后一部分进行讨论。假设离散事件et是kˆi的一个实例，基于排名的标准将考虑et是否异常，如果pi不在前N个预测中的话（如图4.4所示）。
 
-<figure><img src=".gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (28).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (8).png" alt=""><figcaption><p>图4.4：基于排名标准的示例</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (29).png" alt=""><figcaption><p>图4.4：基于排名标准的示例</p></figcaption></figure>
 
 ## 4.5 超参数调整
 

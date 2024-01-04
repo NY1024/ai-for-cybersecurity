@@ -140,7 +140,7 @@ PalmTree提出了基于预训练模型的函数签名生成模型，如图2.4所
 
 <figure><img src=".gitbook/assets/image (9) (1) (1).png" alt=""><figcaption><p>图2.4 函数签名生成模型概览</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (10).png" alt=""><figcaption><p>代码2.5 函数边界识别的代码。</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (10) (1).png" alt=""><figcaption><p>代码2.5 函数边界识别的代码。</p></figcaption></figure>
 
 ## 2.5 模型训练中的问题
 
@@ -150,7 +150,7 @@ PalmTree提出了基于预训练模型的函数签名生成模型，如图2.4所
 
 第三，机器学习中广泛注意到精度和召回率之间的权衡，可以通过加权损失函数进行调整。这可以通过在某些特定安全问题（例如二进制重写）上牺牲一些精度来实现较高的召回。
 
-<figure><img src=".gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (11) (1).png" alt=""><figcaption></figcaption></figure>
 
 由于PalmTree \[44]提供了在函数边界识别问题上的模型性能，表2.1直接复制了原始论文的结果。使用单热嵌入方法进行的函数边界识别的模型性能在\[67]中得到评估，这里我们在表2.2中引用了它们的模型性能。
 

@@ -10,11 +10,11 @@ Android恶意软件简单来说是一种旨在损害Android用户移动设备的
 
 在过去，Android勒索软件利用了一个名为"SYSTEM\_ALERT\_WINDOW"的特殊权限，该权限可以绘制一个窗口，无论按下哪个按钮，该窗口都会位于所有其他窗口之上。这些Android勒索软件故意滥用此权限来显示勒索通知，占据屏幕，使设备在用户支付赎金之前无法使用。
 
-<figure><img src=".gitbook/assets/image (12).png" alt=""><figcaption><p>代码3.1:通知具有完整的意图并设置为“调用”类别</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (12) (1).png" alt=""><figcaption><p>代码3.1:通知具有完整的意图并设置为“调用”类别</p></figcaption></figure>
 
 有关一种新的Android勒索软件变种的详细信息于2020年10月8日揭示\[68]。基本上，为了发布其勒索通知，它联合使用“call”通知和“onUserLeaveHint()”来触发勒索屏幕。如代码3.1所示，恶意软件创建了一个通知构建器。setCategory方法用于使此通知需要立即用户操作。setFullScreenIntent方法将通知与图形用户界面连接，以便在用户点击时弹出。
 
-<figure><img src=".gitbook/assets/image (14).png" alt=""><figcaption><p>代码3.2:恶意软件重写onUserLeaveHint</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (14) (1).png" alt=""><figcaption><p>代码3.2:恶意软件重写onUserLeaveHint</p></figcaption></figure>
 
 为了持续占据屏幕并显示勒索通知，恶意软件需要调用勒索软件屏幕的自动弹出，而无需用户交互。如代码3.2所示，恶意软件重写了Activity类的onUserLeaveHint()回调函数。每当恶意软件屏幕被推到后台时，将调用回调函数，将呼叫活动带到前台。由于恶意软件已经使用通知类型设置为“call”挂钩了RansomActivity意图，已经形成了一系列的函数调用链，使得恶意软件能够占据屏幕。
 
@@ -22,7 +22,7 @@ Android恶意软件简单来说是一种旨在损害Android用户移动设备的
 
 由于深度学习未应用于本章，因此无法采用图1.1中显示的统一深度学习流程。在本用例中采用的机器学习流程是在\[33]中提出的，并在图3.1中显示。从一个应用程序开始，通过基于Google官方Android模拟器\[4]和Xposed Hooking框架\[85]构建的动态分析引擎\[33]提取其元数据。预期的元数据包括所请求的权限、调用的API和使用的意图。为了实现高UI覆盖率，动态分析引擎采用Monkey UI exerciser \[74]在应用程序和系统级别生成UI事件流。有了这些提取的元数据，特征工程组件负责选择关键API集，以进行进一步的特征嵌入编码。随后，这些编码后的特征向量将由Random Forest机器学习算法用作训练数据集。经过交叉验证后，训练好的模型将在生产环境中部署进行在线测试。同时，将收集假阳性和假阴性以准备进行模型重新训练。在\[33]中，定期重新训练的时间设置为一个月。在模型重新训练期间，新提交的应用程序和现有的应用程序数据集将经过上述整个流程，以获得适应不断发展的Android恶意软件的重新训练模型。
 
-<figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption><p>图3.1：Android恶意软件检测的机器学习流程（提出于[33]）</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (15) (1).png" alt=""><figcaption><p>图3.1：Android恶意软件检测的机器学习流程（提出于[33]）</p></figcaption></figure>
 
 ## 3.4 特征工程
 
@@ -30,7 +30,7 @@ Android恶意软件简单来说是一种旨在损害Android用户移动设备的
 
 API规范是对开发者进行详细说明，指导其如何使用此接口来满足特定的需求或功能。其中一个作为特征选取的API是android.telephony.SmsManager sendTextMessage。该API专门负责发送基于文本的短信，其规范如代码3.3所示\[66]。
 
-<figure><img src=".gitbook/assets/image (16).png" alt=""><figcaption><p>代码3.3:sendTextMessage</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (16) (1).png" alt=""><figcaption><p>代码3.3:sendTextMessage</p></figcaption></figure>
 
 特征工程是为了识别特征，更好地表示机器学习处理的目标问题，并进一步提高其准确性。它通常使用领域特定的知识或自动方法来提取、选择或构建正确的特征。对于这个Android恶意软件检测用例，实现高准确性的关键在于特征选择，而在\[33]提出的方法中，本质上是API的选择。考虑到当前Android SDK提供了超过50,000个API，一个主要问题是是否应选择所有API。如\[33]中所演示的，只需选择其中的一小部分API即可实现。实际上，选定了426个关键API作为特征。关于为什么只选择了一小部分API，主要原因如下：
 
@@ -57,7 +57,7 @@ API选择有四个步骤：
 
 
 
-<figure><img src=".gitbook/assets/image (17).png" alt=""><figcaption><p>图3.2 集合C、集合P、集合S中API的数量及它们的重叠部分</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (17) (1).png" alt=""><figcaption><p>图3.2 集合C、集合P、集合S中API的数量及它们的重叠部分</p></figcaption></figure>
 
 ### 3.4.3 进一步丰富特征空间&#x20;
 
@@ -69,7 +69,7 @@ API选择有四个步骤：
 
 在机器学习中，特征向量基本上是一组特征。每个应用程序都有其自己的一组特征。不同的特征由不同的数值或符号特征值表示，多个特征值可以组合形成一个特征向量。为了进行处理和统计分析，机器学习算法通常需要数值特征向量\[28]。采用Random Forest算法对应用程序进行恶意软件或非恶意软件的分类。在每个应用程序的动态仿真过程中，跟踪的API的调用状态（API调用的名称和参数）被记录下来。如代码3.4所示，每个仿真都被分配一个唯一的任务ID。例如，任务ID 20170718000003300对应于一个名为“meimeicaicaicai”的应用程序。采用One-Hot编码\[33]将日志转换为包含总共n位的特征向量，其中n是跟踪的API的总数。如代码3.5所示，每一位对应于一个跟踪的API - 如果调用API，则相应的位设置为1；否则设置为0。
 
-<figure><img src=".gitbook/assets/image (18).png" alt=""><figcaption><p>代码3.4:应用程序运行日志数据集原始示例</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (18) (1).png" alt=""><figcaption><p>代码3.4:应用程序运行日志数据集原始示例</p></figcaption></figure>
 
 ## 3.6 机器学习
 
@@ -77,11 +77,11 @@ API选择有四个步骤：
 
 代码3.6显示了一个用于实现上述随机森林机器学习算法的代码片段。在\[33]的实验中，模型的超参数是根据领域知识配置的，这些超参数包含在\[33]作者创建的存储库中，将在第3.9.1节中简要提及。
 
-<figure><img src=".gitbook/assets/image (20).png" alt=""><figcaption><p>代码3.5 一个特征向量样本</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (20) (1).png" alt=""><figcaption><p>代码3.5 一个特征向量样本</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (21).png" alt=""><figcaption><p>图3.3:随机森林简化</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (21) (1).png" alt=""><figcaption><p>图3.3:随机森林简化</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (22).png" alt=""><figcaption><p>代码3.6 训练分类树</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (22) (1).png" alt=""><figcaption><p>代码3.6 训练分类树</p></figcaption></figure>
 
 ## 3.7 模型部署
 
@@ -89,9 +89,9 @@ API选择有四个步骤：
 
 准确性结果表明，通过这12个月，每月的精度都超过98%（最小：98.5%，最大：99.0%），召回率都超过96%（最小：96.5%，最大：97.0%）\[33]。在后续工作中\[34]，他们更新了部署，如图3.4所示，而不是原始的单片式的背靠背执行序列。
 
-<figure><img src=".gitbook/assets/image (23).png" alt=""><figcaption><p>代码3.7 检测结果样本</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (23) (1).png" alt=""><figcaption><p>代码3.7 检测结果样本</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (24).png" alt=""><figcaption><p>图3.4:APIChecker在T-Market中的分布式部署</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (24) (1).png" alt=""><figcaption><p>图3.4:APIChecker在T-Market中的分布式部署</p></figcaption></figure>
 
 ## 3.8 系统评估
 
