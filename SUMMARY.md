@@ -7,5 +7,5 @@
 * [4 AI检测序列事件中的异常事件](4-ai-jian-ce-xu-lie-shi-jian-zhong-de-yi-chang-shi-jian.md)
 * [5 AI检测DNS缓存投毒攻击](5-ai-jian-ce-dns-huan-cun-tou-du-gong-ji.md)
 * [6 AI检测PC恶意软件](6-ai-jian-ce-pceyi-ruan-jian.md)
-* [AI检测代码相似度](ai-jian-ce-dai-ma-xiang-si-du.md)
+* [7 AI检测代码相似度](7-ai-jian-ce-dai-ma-xiang-si-du.md)
 * [AI执行恶意软件聚类](ai-zhi-hangeyi-ruan-jian-ju-lei.md)

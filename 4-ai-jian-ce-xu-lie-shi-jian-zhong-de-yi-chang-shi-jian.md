@@ -52,7 +52,7 @@
 
 
 
-<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 \
 \
@@ -70,20 +70,20 @@
 
 
 
-<figure><img src=".gitbook/assets/image (2) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>代码4.2 SOSP2009数据处理</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption><p>代码4.2 SOSP2009数据处理</p></figcaption></figure>
 
 ### 4.3.2 UNSW-NB15数据集
 
 首先，表4.5展示了UNSW-NB15数据集中的一些原始数据样本。
 
 \
-![](<.gitbook/assets/image (1) (1).png>)
+![](<.gitbook/assets/image (1) (1) (1).png>)
 
-<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 数据处理的代码片段如代码4.3所示。它提取源IP、源端口、目标IP和目标端口，然后将它们合并为一个载入序列的事件。更重要的是，标签和日志键是不可避免的。对于日志键，一些具有“-”和“空格”值的出现被移除。包含数字值的一些文本类型被转换为数字类型。特征列的中位数用于替换空值。最后，我们附加一些附加键，将其制作成一个日志键序列（更多细节见“data/unswnb15/key.py”）。
 
@@ -99,25 +99,25 @@
 
 与LSTM不同，双向LSTM包含前向和后向层，它们连接到相同的输出层。随后，来自一个LSTM的每个输出的连接构成了Bi-LSTM，连接的向量将传递到下一个LSTM层。最后，最后一个线性层将具有激活函数，例如softmax函数。Bi-LSTM的架构如图4.2所示。
 
-<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption><p>图4.1：DabLog的架构概述</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1) (1).png" alt=""><figcaption><p>图4.1：DabLog的架构概述</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (5) (1).png" alt=""><figcaption><p>图4.2：BiLSTM的架构概述</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (5) (1) (1).png" alt=""><figcaption><p>图4.2：BiLSTM的架构概述</p></figcaption></figure>
 
 #### 4.4.2 嵌入层
 
 由于我们将离散事件序列S = \[et | 1 ≤ t ≤ T] 作为输入，我们需要将 et ∈ K 嵌入到模型能够识别的嵌入向量中，其中 K = {ki | 1 ≤ k ≤ V } 是词汇大小为 V = |K| 的离散事件键的集合。除了离散日志键 K，我们还添加了三个特殊的填充键：序列开始、序列结束和未知（如代码4.4所示，由文件“models/util.py”中的Codebook类实现）。一方面，序列开始和序列结束提供了额外的特征，以帮助自编码器和预测器。另一方面，未知键用于提高计算性能。
 
-<figure><img src=".gitbook/assets/image (6) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 我们训练了一个额外的嵌入层，与其他层一起进行训练，而不是利用其他现有的嵌入方法生成词嵌入向量，因为通过这种方式可以定制嵌入函数（如代码4.5所示，由文件“models/dablog.py”中的Dablog类实现）。
 
-<figure><img src=".gitbook/assets/image (7) (1).png" alt=""><figcaption><p>代码4.5：嵌入层代码实现</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (7) (1) (1).png" alt=""><figcaption><p>代码4.5：嵌入层代码实现</p></figcaption></figure>
 
 #### 4.4.3 深度LSTM自编码器
 
 与普通的深度自编码器不同，普通深度自编码器学习正常数据的恒等函数并重建正常数据分布，而\[37]提出的深度LSTM自编码器试图从嵌入层中重构分类事件的logit输入。为了解决时间敏感的事件，这个自编码器的目标函数也遵循典型的深度自编码器。我们设X为输入分布，ψ ◦ ϕ(X)为目标分布，因此损失函数可以写为：
 
-<figure><img src=".gitbook/assets/image (8) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (8) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 其中，ϕ是编码器函数，ψ是解码器函数，E是将S映射到X的嵌入函数，rev是一个反转分布矩阵的函数。
 

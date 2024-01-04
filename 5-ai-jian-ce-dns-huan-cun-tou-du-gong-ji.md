@@ -8,7 +8,7 @@
 
 &#x20;在这个用例中，正如之前的工作所演示的\[97]，深度学习被应用来帮助跨越这个障碍。
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption><p><br>Figure 5.1: DNS缓存投毒示意图</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (10).png" alt=""><figcaption><p><br>Figure 5.1: DNS缓存投毒示意图</p></figcaption></figure>
 
 ## 5.2 原始数据生成和收集
 
@@ -26,7 +26,7 @@
 
 表5.1显示了所捕获的DNS缓存投毒数据包的几个示例。所显示的所有数据包都来自一个DNS缓存投毒会话。192.168.100.128代表用户机器，192.168.100.50代表本地DNS服务器。数据包1显示用户机器向本地DNS服务器请求www.example.net的DNS记录；数据包2到5是本地DNS服务器发送到全球DNS服务器的查询数据包；数据包6是发送到本地DNS服务器的攻击数据包，其IP地址被伪装成全球DNS服务器的IP地址，且DNS记录也被伪造；数据包7是本地DNS服务器在（伪造的）响应从全球DNS服务器接收后，向用户机器发送的响应。
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 5.3 标记DNS会话
 
@@ -40,7 +40,7 @@
 
 DNS缓存投毒攻击的网络数据包形成了由查询和答案组成的会话。因此，每个数据样本应包含来自多个网络数据包的信息。直观的想法是让一个数据样本包含会话中每个数据包中的每个字节。然而，这是一个不好的主意。一方面，如果没有任何特征提取，数据样本可能包含可能损害隐私的敏感私人信息，比如要查询的域。另一方面，模型可能会学到不希望学到的信息，比如机器的媒体访问控制（MAC）地址，这最好视为签名。
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption><p>代码5.1 处理恶意原始数据</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption><p>代码5.1 处理恶意原始数据</p></figcaption></figure>
 
 \
 因此，与其使用整个数据包，不如选择来自每个DNS数据包的32个字节，如表5.2所列。最低的ETH层中的所有字节都被省略。这是有意排除的，以消除MAC地址的影响：MAC地址可能被视为检测恶意数据包的标志。选择的32个字节包括IP层、UDP层和DNS层的一部分。只使用DNS层的部分数据，因为查询和记录被排除在外。这些部分包含域名和IP地址，出于与上述相似的原因被排除：不希望神经网络学到“恶意”域名。在处理数据包数据后，每个数据包都被表示为一个包含32个整数的固定长度序列，整数范围从0到255。整个捕获的网络流量被表示为包含32个整数向量的序列，序列长度等于网络日志中的数据包数量。
@@ -50,7 +50,7 @@ DNS缓存投毒攻击的网络数据包形成了由查询和答案组成的会�
 接下来的步骤是统一数据表示。具体而言，变长序列应该被处理成固定长度的序列。一般有两种方法可以做到这一点。一种是找到最长的序列，然后用虚拟数据填充所有其他较短的序列，使它们具有相同的长度。另一种方法是应用滑动窗口，以便长序列可以转换为若干较短的序列。在深度学习的多个场景中，这两种方法都被证明是有效的，在这个用例中，采用了滑动窗口方法。应用滑动窗口后，生成了多个固定长度的序列，这里的序列长度等于滑动窗口的长度。其中，每个元素都是一个包含32个整数的向量。\
 
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption></figcaption></figure>
 
 最后一步是改变整数。这些整数是从字节转换而来的，但整数可能不是字节的最合适的表示。例如，在DNS层的标志字段中有两个字节，但这两个字节由控制位组成。因此，接近的数字并不一定意味着所表示的功能是接近的。例如，在响应DNS数据包的情况下，DNS层标志字段的低字节（八位）包含五个控制标志：位0到3表示回复代码；位4表示是否接受非认证数据；位5表示答案是否经过身份验证；位6在响应DNS数据包中保留；位7表示是否可用递归。顺便说一句，0x00，其中所有位都为零，和0x10，其中除了位4外都为零，只在一位上有差异，但数字差异是16。简言之，比特表示在这种情况下可能更自然。相应地，向量中的整数被转换为比特。
 
@@ -61,7 +61,7 @@ DNS缓存投毒攻击的网络数据包形成了由查询和答案组成的会�
 3. 然后，应用长度为6的滑动窗口，生成两个包含6个由32个整数组成的向量的序列。这样的序列也可以视为形状为6∗32的矩阵。
 4. 最后，将每个整数转换为比特。因为每个整数源自一个字节，8位足以表示所有整数。因此，生成的数据样本的形状为6 ∗ 32 ∗ 8，就像图像具有6行、32列和8个通道一样。
 
-<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 5.5 数据集构建
 
@@ -86,7 +86,7 @@ DNS缓存投毒攻击的网络数据包形成了由查询和答案组成的会�
 
 在这个用例中有两组参数。一组对应于滑动窗口，另一组对应于神经网络内部的超参数。
 
-<figure><img src=".gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (9) (1).png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src=".gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
 
