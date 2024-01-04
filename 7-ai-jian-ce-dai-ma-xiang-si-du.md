@@ -18,9 +18,9 @@
 
 总的来说，原始数据是通过使用不同编译器设置编译源代码获得的。编译的程序可以进一步分为函数、基本块和/或循环。在模型训练阶段，可以使用符号表识别函数，在生产阶段，可以使用现有工具（例如IDAPro）识别函数。
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 7.3 数据处理
 
@@ -32,7 +32,7 @@
 
 原始字节可以自然地映射到十进制整数值，即0到255，以便进行深度学习模型的计算。如果需要填充，填充值可以映射到超出范围的整数。这种映射的缺点是数值特征将传递到深度学习模型，这是不希望的，因为不能断言字节0x10在数值上小于0xff。解决此问题的一种方法是将字节映射为独热向量，但这将大大增加模型的大小。
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### 7.3.2 图表示
 
@@ -45,11 +45,11 @@
 
 生成的ACFG已准备好输入深度学习模型。ACFG是与架构无关的。换句话说，通过将信息抽象成ACFG，缓解了跨架构代码相似性检测的挑战。然而，缺点是由于基于启发式和领域知识选择的节点特征，可能会忽略一些隐含的模式。
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 7.4 模型
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption></figcaption></figure>
 
 为了获得量化的相似性分数，这个用例应用深度学习来学习给定输入的嵌入向量。就像其他基于深度学习的相似性检测应用（例如人脸识别），在那里相同的人脸会产生相似的嵌入向量，从相同函数编译的二进制代码也应该产生相似的向量。为了实现这个目标，使用的最受欢迎的模型架构之一是siamese网络\[10]，最初是为了验证手写签名而提出的。因此，为了使用siamese网络来训练模型，需要有标记的数据。
 
@@ -66,7 +66,7 @@
 
 显然，重要的是如何获取节点嵌入。这里让我们使用Gemini中的节点嵌入计算：
 
-<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (5) (1).png" alt=""><figcaption></figcaption></figure>
 
 在方程7.1中，W是可训练权重，σ是非线性变换函数，An是节点n的相邻节点集合。非线性变换函数可以是可训练的，因此可以是一个全连接的神经网络。这里非常关键的一个变量是迭代次数t，每次迭代表示对图进行一次跳跃。例如，当t = 1时，节点嵌入汇聚了来自直接邻居的信息；当t = 2时，节点嵌入汇聚了来自直接邻居的邻居的信息。虽然在Gemini论文中没有提到，但现今的研究人员都意识到了过度平滑的问题，因此总跳数不应该太大。
 
@@ -76,17 +76,17 @@
 
 正如前面所述，GNN主体的最后一层（例如，池化层）将通过聚合节点表示输出图的嵌入。下一节将介绍整个网络结构，从一对相似/不相似的二进制代码中学习。
 
-<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### 7.4.2 孪生网络
 
 孪生网络是一种流行的表示学习架构，用于学习嵌入向量，使得相似输入的输出向量之间的距离最小化。为了训练孪生架构，需要一对相似/不相似的数据样本，这与常规的分类和回归任务不同，在训练时只需要地面真值。本节首先解释孪生网络的整体架构，然后介绍训练过程。
 
-<figure><img src=".gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (7) (1).png" alt=""><figcaption></figcaption></figure>
 
 如图7.5所示，孪生网络的最重要的思想是简单的：两个共享权重的子网络，每个子网络将在输入对中取一样本。损失函数是子网络输出之间的距离，如果输入是一对相似样本，则应该最小化，如果输入是一对不相似样本，则应该最大化。现代孪生网络使用所谓的对比损失，可以处理相似对和不相似对作为输入。对比损失的一个例子如方程7.2所示，其中D是两个子网络输出的距离，y是一个二进制标量，表示D是相似对还是不相似对的距离，m是不相似对之间的最大距离阈值。
 
-<figure><img src=".gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (8) (1).png" alt=""><figcaption></figcaption></figure>
 
 请注意，在方程7.2中，如果y = 1，D来自相似对。距离D通常是欧几里得距离，但如果需要，它可以被任何距离或相似度测量替代。事实上，在原始的Gemini \[88] 论文中，作者并没有使用任何对比损失，而只使用余弦相似度作为损失函数。通过最小化L，神经网络不仅可以学习两个样本如何相似，还可以学习它们如何不同。对于不相似的样本，尽管在标签和类别方面存在差异，但它们仍然属于同一领域，因此有必要有一个阈值m来限制距离。
 
@@ -94,7 +94,7 @@
 
 子网络的模型参数是共享的，因此在内存中实际上只有一组模型参数。梯度将通过反向传播相对于损失函数进行计算，这需要两个不同输入的两个不同输出。代码7.5显示了从Gemini存储库修改的代码片段。图\_embed函数在图7.6中早些时候展示过。正如注意到的那样，由于子网络共享权重，每个权重只有一个副本，所有这些权重都在此代码片段的第5行、第7行到第10行、第12行和第14行定义。对于不熟悉Tensorflow 1.X版本的人来说，tf.placeholder是计算图上的一个节点，可以在运行时保存数据（例如输入数据），而这些变量如X1、msg1\_mask将保存来自数据集的输入。在这里，一对中的两个不同样本将被相同地处理，如第20行和第25行所示。在获取了来自不同输入的两个嵌入向量（即embed1和embed2）之后，可以像代码7.4中所示那样获得损失函数。然后可以计算损失函数相对于参数的梯度。
 
-<figure><img src=".gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (9) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## 7.5 代码、数据和其他问题
 

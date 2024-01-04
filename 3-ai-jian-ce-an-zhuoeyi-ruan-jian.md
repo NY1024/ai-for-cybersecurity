@@ -10,11 +10,11 @@ Android恶意软件简单来说是一种旨在损害Android用户移动设备的
 
 在过去，Android勒索软件利用了一个名为"SYSTEM\_ALERT\_WINDOW"的特殊权限，该权限可以绘制一个窗口，无论按下哪个按钮，该窗口都会位于所有其他窗口之上。这些Android勒索软件故意滥用此权限来显示勒索通知，占据屏幕，使设备在用户支付赎金之前无法使用。
 
-<figure><img src=".gitbook/assets/image (12) (1).png" alt=""><figcaption><p>代码3.1:通知具有完整的意图并设置为“调用”类别</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (12) (1) (1).png" alt=""><figcaption><p>代码3.1:通知具有完整的意图并设置为“调用”类别</p></figcaption></figure>
 
 有关一种新的Android勒索软件变种的详细信息于2020年10月8日揭示\[68]。基本上，为了发布其勒索通知，它联合使用“call”通知和“onUserLeaveHint()”来触发勒索屏幕。如代码3.1所示，恶意软件创建了一个通知构建器。setCategory方法用于使此通知需要立即用户操作。setFullScreenIntent方法将通知与图形用户界面连接，以便在用户点击时弹出。
 
-<figure><img src=".gitbook/assets/image (14) (1).png" alt=""><figcaption><p>代码3.2:恶意软件重写onUserLeaveHint</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (14) (1) (1).png" alt=""><figcaption><p>代码3.2:恶意软件重写onUserLeaveHint</p></figcaption></figure>
 
 为了持续占据屏幕并显示勒索通知，恶意软件需要调用勒索软件屏幕的自动弹出，而无需用户交互。如代码3.2所示，恶意软件重写了Activity类的onUserLeaveHint()回调函数。每当恶意软件屏幕被推到后台时，将调用回调函数，将呼叫活动带到前台。由于恶意软件已经使用通知类型设置为“call”挂钩了RansomActivity意图，已经形成了一系列的函数调用链，使得恶意软件能够占据屏幕。
 
@@ -22,7 +22,7 @@ Android恶意软件简单来说是一种旨在损害Android用户移动设备的
 
 由于深度学习未应用于本章，因此无法采用图1.1中显示的统一深度学习流程。在本用例中采用的机器学习流程是在\[33]中提出的，并在图3.1中显示。从一个应用程序开始，通过基于Google官方Android模拟器\[4]和Xposed Hooking框架\[85]构建的动态分析引擎\[33]提取其元数据。预期的元数据包括所请求的权限、调用的API和使用的意图。为了实现高UI覆盖率，动态分析引擎采用Monkey UI exerciser \[74]在应用程序和系统级别生成UI事件流。有了这些提取的元数据，特征工程组件负责选择关键API集，以进行进一步的特征嵌入编码。随后，这些编码后的特征向量将由Random Forest机器学习算法用作训练数据集。经过交叉验证后，训练好的模型将在生产环境中部署进行在线测试。同时，将收集假阳性和假阴性以准备进行模型重新训练。在\[33]中，定期重新训练的时间设置为一个月。在模型重新训练期间，新提交的应用程序和现有的应用程序数据集将经过上述整个流程，以获得适应不断发展的Android恶意软件的重新训练模型。
 
-<figure><img src=".gitbook/assets/image (15) (1).png" alt=""><figcaption><p>图3.1：Android恶意软件检测的机器学习流程（提出于[33]）</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (15) (1) (1).png" alt=""><figcaption><p>图3.1：Android恶意软件检测的机器学习流程（提出于[33]）</p></figcaption></figure>
 
 ## 3.4 特征工程
 
