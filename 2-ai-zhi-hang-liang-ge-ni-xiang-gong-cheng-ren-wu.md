@@ -13,7 +13,7 @@
 
 尽管这两个RE任务乍一看似乎很简单。但要通过传统的机器学习或数据挖掘方法实现高准确度并不容易。这主要是因为编译器可能以各种难以预测的模式在后端发出二进制代码的原因。
 
-<figure><img src=".gitbook/assets/image (2) (1) (1).png" alt=""><figcaption><p>图2.1：数据样本的图解</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1) (1) (1).png" alt=""><figcaption><p>图2.1：数据样本的图解</p></figcaption></figure>
 
 ## 2.2 相关工作
 
@@ -52,7 +52,7 @@
 
 函数签名生成问题的标签。函数签名生成问题是一系列通常通过多个模型解决的小任务。因此，对于每个函数有三种标签（参数数量、每个参数的类型和返回值的类型）。
 
-<figure><img src=".gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>代码2.1 原始字节编码的代码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption><p>代码2.1 原始字节编码的代码</p></figcaption></figure>
 
 ### 2.3.3 数据处理
 
@@ -88,11 +88,11 @@
 
 其次，一些隐藏在指令序列中的高级语义（例如数据流）在没有一些特定设计的深度学习模型的情况下很难被捕捉。因此，提出了具有特定的预训练任务和大型数据集以揭示复杂的内部结构和高级语义的预训练模型（例如\[44]和\[38]）。这样一个训练良好的模型可以应用于许多下游任务并取得良好的结果。
 
-<figure><img src=".gitbook/assets/image (4) (1) (1).png" alt=""><figcaption><p>图2.2：二进制编码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1) (1) (1).png" alt=""><figcaption><p>图2.2：二进制编码</p></figcaption></figure>
 
 
 
-<figure><img src=".gitbook/assets/image (5) (1).png" alt=""><figcaption><p>代码 2.2：Instruction2Vec 代码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (5) (1) (1).png" alt=""><figcaption><p>代码 2.2：Instruction2Vec 代码</p></figcaption></figure>
 
 #### 2.3.3.2 指导选择嵌入方法的原则
 
@@ -108,11 +108,11 @@
 
 大多数逆向工程工作的深度学习模型可以共享学习指令序列表示的相同组件。在本节中，我们首先介绍表示学习的模型架构设计，然后展示特定逆向工程任务的模型架构。
 
-<figure><img src=".gitbook/assets/image (6) (1).png" alt=""><figcaption><p>代码2.3 用于Tokenization的代码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6) (1) (1).png" alt=""><figcaption><p>代码2.3 用于Tokenization的代码</p></figcaption></figure>
 
 ### 2.4.1 共同组件：学习指令嵌入
 
-<figure><img src=".gitbook/assets/image (7) (1).png" alt=""><figcaption><p>图2.3：预训练模型概述（摘自[44]）</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (7) (1) (1).png" alt=""><figcaption><p>图2.3：预训练模型概述（摘自[44]）</p></figcaption></figure>
 
 深度学习被认为擅长构建模型，能够从高维数据中学习复杂的结构和捕捉底层复杂的特征\[41, 61]。然而，最好的情况是开发者能够以数据结构表示数据样本，该数据结构可以直接向深度学习模型展示其内部格式关系。
 
@@ -128,7 +128,7 @@ Transformer的编码器生成一系列隐藏状态作为输出，每个隐藏状
 
 注意：预训练任务的目的是通过无监督学习学习指令的良好表示。因此，如果下游任务的标记训练集足够大以学习良好的模型，则预训练任务并非总是必要的。
 
-<figure><img src=".gitbook/assets/image (8) (1).png" alt=""><figcaption><p>代码2.4 用于预训练模型的代码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (8) (1) (1).png" alt=""><figcaption><p>代码2.4 用于预训练模型的代码</p></figcaption></figure>
 
 ### 2.4.2 模型架构用于函数边界识别
 
@@ -138,7 +138,7 @@ Transformer的编码器生成一系列隐藏状态作为输出，每个隐藏状
 
 PalmTree提出了基于预训练模型的函数签名生成模型，如图2.4所示。首先，该模型利用\[44]中显示的预训练模型为目标函数中的指令学习嵌入。其次，采用递归神经网络（RNN）或其变种（LSTM或GRU）来聚合目标函数的指令嵌入。第三，采用输出层来预测目标函数的类型签名。代码2.5展示了模型的实现。
 
-<figure><img src=".gitbook/assets/image (9) (1).png" alt=""><figcaption><p>图2.4 函数签名生成模型概览</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (9) (1) (1).png" alt=""><figcaption><p>图2.4 函数签名生成模型概览</p></figcaption></figure>
 
 <figure><img src=".gitbook/assets/image (10).png" alt=""><figcaption><p>代码2.5 函数边界识别的代码。</p></figcaption></figure>
 

@@ -52,7 +52,7 @@
 
 
 
-<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 \
 \
@@ -70,20 +70,20 @@
 
 
 
-<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption><p>代码4.2 SOSP2009数据处理</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>代码4.2 SOSP2009数据处理</p></figcaption></figure>
 
 ### 4.3.2 UNSW-NB15数据集
 
 首先，表4.5展示了UNSW-NB15数据集中的一些原始数据样本。
 
 \
-![](<.gitbook/assets/image (1).png>)
+![](<.gitbook/assets/image (1) (1).png>)
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 数据处理的代码片段如代码4.3所示。它提取源IP、源端口、目标IP和目标端口，然后将它们合并为一个载入序列的事件。更重要的是，标签和日志键是不可避免的。对于日志键，一些具有“-”和“空格”值的出现被移除。包含数字值的一些文本类型被转换为数字类型。特征列的中位数用于替换空值。最后，我们附加一些附加键，将其制作成一个日志键序列（更多细节见“data/unswnb15/key.py”）。
 
@@ -99,22 +99,82 @@
 
 与LSTM不同，双向LSTM包含前向和后向层，它们连接到相同的输出层。随后，来自一个LSTM的每个输出的连接构成了Bi-LSTM，连接的向量将传递到下一个LSTM层。最后，最后一个线性层将具有激活函数，例如softmax函数。Bi-LSTM的架构如图4.2所示。
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption><p>图4.1：DabLog的架构概述</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption><p>图4.1：DabLog的架构概述</p></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption><p>图4.2：BiLSTM的架构概述</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (5) (1).png" alt=""><figcaption><p>图4.2：BiLSTM的架构概述</p></figcaption></figure>
 
 #### 4.4.2 嵌入层
 
 由于我们将离散事件序列S = \[et | 1 ≤ t ≤ T] 作为输入，我们需要将 et ∈ K 嵌入到模型能够识别的嵌入向量中，其中 K = {ki | 1 ≤ k ≤ V } 是词汇大小为 V = |K| 的离散事件键的集合。除了离散日志键 K，我们还添加了三个特殊的填充键：序列开始、序列结束和未知（如代码4.4所示，由文件“models/util.py”中的Codebook类实现）。一方面，序列开始和序列结束提供了额外的特征，以帮助自编码器和预测器。另一方面，未知键用于提高计算性能。
 
-<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6) (1).png" alt=""><figcaption></figcaption></figure>
 
 我们训练了一个额外的嵌入层，与其他层一起进行训练，而不是利用其他现有的嵌入方法生成词嵌入向量，因为通过这种方式可以定制嵌入函数（如代码4.5所示，由文件“models/dablog.py”中的Dablog类实现）。
 
-<figure><img src=".gitbook/assets/image (7).png" alt=""><figcaption><p>代码4.5：嵌入层代码实现</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (7) (1).png" alt=""><figcaption><p>代码4.5：嵌入层代码实现</p></figcaption></figure>
 
 #### 4.4.3 深度LSTM自编码器
 
 与普通的深度自编码器不同，普通深度自编码器学习正常数据的恒等函数并重建正常数据分布，而\[37]提出的深度LSTM自编码器试图从嵌入层中重构分类事件的logit输入。为了解决时间敏感的事件，这个自编码器的目标函数也遵循典型的深度自编码器。我们设X为输入分布，ψ ◦ ϕ(X)为目标分布，因此损失函数可以写为：
 
-<figure><img src=".gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (8) (1).png" alt=""><figcaption></figcaption></figure>
+
+其中，ϕ是编码器函数，ψ是解码器函数，E是将S映射到X的嵌入函数，rev是一个反转分布矩阵的函数。
+
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption><p>图4.3：深度LSTM自编码器网络[93]</p></figcaption></figure>
+
+我们使用rev函数的原因是Y与Xe的顺序相反，这是由于LSTM的隐藏状态。如图4.3所示，我们可以通过以下方式简单表示LSTM网络：
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+其中，ht是时间步t处的隐藏状态，xt是当前数据点。正如我们所看到的，LSTM从第1步到最后一个时间步迭代计算这个函数。类似于函数堆栈，我们可以将这个编码器过程看作是将xt推入堆栈hT，解码器过程是从堆栈hT中弹出xt。因此，Xe和Y的顺序是相反的。 这个自编码器是非条件的，这意味着在解码Y = \[yτ | 1 ≤ τ ≤ T]中的yˆτ+1时，它不会向解码器ϕ提供条件数据点yˆτ = eT −τ+1，尽管条件预测器可以提供更好的结果。首先，条件自编码器充当提示，告诉预测器应该解码哪个后缀，而对自编码器本身提供了没有额外目的。其次，因为相邻事件通常具有显著的短期依赖关系，提供一个导致模型迅速学习短期依赖关系但忽略长期连接的条件并不是最优的。代码4.6显示了实现自编码器的代码片段。
+
+<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption><p>代码4.6 自编码器</p></figcaption></figure>
+
+### 4.4.4 事件分类器与 
+
+### 4.4.4 事件分类器与Anomaly Critic
+
+使用嵌入层和自编码器仍然不足以实现我们的目标：预测一个序列是正常还是异常。因此，在深度自编码器之后，我们立即添加了一个额外的单层前馈神经网络γ进行预测。层γ充当一个多类分类器，接受解码器的输出Y作为输入，并生成概率矩阵P = \[Pτ | 1 ≤ τ ≤ T]，其中Pτ = \[Pi | 1 ≤ i ≤ V ]，而Pi可以被解释为离散事件et = eT −τ+1是离散事件键ki的实例的可能性。我们选择γ作为事件分类器，而不是一些典型异常检测自编码器中使用的标量重构误差，因为通过检查离散事件来识别时间敏感的异常更像是一个语言处理问题。我的意思是，我们可以将序列S视为句子，事件et视为单词，因此我们更关心措辞而不是嵌入，以找到合适的词和不合适的词，这等同于S中的正常事件和异常事件。
+
+<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+
+其次，类似于嵌入层，我们还在one-hot函数中包含序列开始、序列结束和未知。请注意，从one-hot表示生成的概率矩阵ˆP与X的顺序相反。因此，嵌入-编码器-解码器-分类器网络试图最小化以下函数：
+
+<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+
+狭义而言，该事件分类器γ的目标函数基于由以下公式定义的分类交叉熵损失：
+
+<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+
+在异常检测的措辞选项中，基于排名和基于阈值的方法是先前工作中采用的两种常见方法。为了与现有工作进行比较，DabLog采用了基于排名的标准，尽管它有一些缺点，这将在最后一部分进行讨论。假设离散事件et是kˆi的一个实例，基于排名的标准将考虑et是否异常，如果pi不在前N个预测中的话（如图4.4所示）。
+
+<figure><img src=".gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src=".gitbook/assets/image (8).png" alt=""><figcaption><p>图4.4：基于排名标准的示例</p></figcaption></figure>
+
+## 4.5 超参数调整
+
+\
+有两组超参数设置，包括数据集调整和神经网络超参数。对于数据集处理，我们在数据处理部分已经提到，seqlen（序列长度）默认设置为10，开发者可以根据场景选择不同的日志键，0表示32，1表示78，2表示104，3表示1129。参数窗口大小指定每个序列的分钟数，默认设置为15。键分母表示键分母的数量，默认设置为100。
+
+对于模型超参数，我们每个层有64个隐藏单元，两个隐藏层，批量大小为256。有关超参数的更多详细信息如下。对于异常标准，排名阈值为0.05，距离阈值为0.05。
+
+## 4.6 模型部署
+
+理想情况下，部署的模型可以实时确定一个事件和一个序列是否异常或正常。然而，有几个因素可能使模型部署变得非常具有挑战性。第一个因素是模型的吞吐量可能或可能不满足实时要求。为了满足所有实时要求，生产系统需要选择一个提供足够计算资源的平台（例如CPU、GPU、内存）。此外，应该注意容器化是部署深度学习模型的一种有用技术。因为容器（例如docker）使得扩展变得容易，它是模型部署的流行平台。容器化的代码还使得更新部署的模型变得更加简单。这减少了停机的可能性，并提高了维护效率。
+
+第二个因素是是否有必要在边缘设备上部署模型。如果是这样，通常需要一个轻量级的模型执行环境，例如TensorFlow Lite。
+
+## 4.7 评估
+
+我们利用准确性和F1得分来比较不同模型的性能。
+
+### 4.7.1  DabLog与基线的比较
+
+首先，我们希望检查DabLog相对于基线预测器的优越性。对于基线，它类似于DeepLog\[23]和nLSALog\[89]，两者都是由两层LSTM网络、一个多类分类器和一个基于排名的评论家实现的，如图4.5所示。与DabLog类似，我们没有直接使用one-hot表示，而是训练了一个定制的嵌入层。就像DeepLog和nLSALog一样，事件分类器由softmax函数激活，它们都利用基于排名的评论家来评估样本是否正常或异常。
+
+图4.6和图4.7说明了基线和DabLog模型基于不同键的F1分数趋势。x轴表示规范化形式的变量排名阈值 θN = N |K∗| × 100%。它等效于使用Top-N阈值而不是|K∗|中的任何事件实例。Y轴表示模型的F1分数。除了DabLog和基线，我们还包括一个简单的频率模型，通过检查序列是否包含任何不是top-N最频繁键实例的事件来报告异常序列。
+
