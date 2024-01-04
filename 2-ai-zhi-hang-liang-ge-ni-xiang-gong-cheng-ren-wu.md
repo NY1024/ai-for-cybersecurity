@@ -13,7 +13,7 @@
 
 尽管这两个RE任务乍一看似乎很简单。但要通过传统的机器学习或数据挖掘方法实现高准确度并不容易。这主要是因为编译器可能以各种难以预测的模式在后端发出二进制代码的原因。
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption><p>图2.1：数据样本的图解</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption><p>图2.1：数据样本的图解</p></figcaption></figure>
 
 ## 2.2 相关工作
 
@@ -52,7 +52,7 @@
 
 函数签名生成问题的标签。函数签名生成问题是一系列通常通过多个模型解决的小任务。因此，对于每个函数有三种标签（参数数量、每个参数的类型和返回值的类型）。
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption><p>代码2.1 原始字节编码的代码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption><p>代码2.1 原始字节编码的代码</p></figcaption></figure>
 
 ### 2.3.3 数据处理
 
@@ -88,7 +88,7 @@
 
 其次，一些隐藏在指令序列中的高级语义（例如数据流）在没有一些特定设计的深度学习模型的情况下很难被捕捉。因此，提出了具有特定的预训练任务和大型数据集以揭示复杂的内部结构和高级语义的预训练模型（例如\[44]和\[38]）。这样一个训练良好的模型可以应用于许多下游任务并取得良好的结果。
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption><p>图2.2：二进制编码</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption><p>图2.2：二进制编码</p></figcaption></figure>
 
 
 

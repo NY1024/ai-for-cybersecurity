@@ -50,6 +50,10 @@
 \
 在数据处理阶段，我们首先将日志键重新设计为三个键集K0（新基础）、K1和K2。它们分别包含31、101和304个日志键。由于会话和块ID都有标签，因此可以安全地使用日志键对每个事件（即日志条目）进行编码，而无需修改原始事件序列。在配置seqlen = 10下，每个键集的统计信息如表4.4所示。这些键集来自同一个日志，只是K1和K2通过重新附加附加字符串来丢弃较少的信息，例如：
 
+
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
 \
 \
 有三种附加字符串类型：
@@ -63,3 +67,11 @@
 对于K1和K2，IP前缀的粒度不同：对于K1，它使用前两个小数（例如10.251._），而对于K2，它使用一个更多的小数（例如10.251.7_）。我们通过附加附加字符串来拆分K0，但我们还丢弃了没有发生的键。
 
 代码4.2展示了数据处理的代码片段。
+
+
+
+<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption><p>代码4.2 SOSP2009数据处理</p></figcaption></figure>
+
+### 4.3.2 UNSW-NB15数据集
